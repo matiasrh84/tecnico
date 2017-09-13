@@ -1,0 +1,7 @@
+-herramientas
+-complementos
+-buscar los 4 complemetos para instalar e instalarlos
+-luego reiniciar netbeans
+-boton derecho sobre libreria y crear una nueva con el nombre: JasperReports 5.0.0
+-agregar los jar dentro de la libreira que estan ubicados en JasperReports 5.0.0
+-luego en la libreria boton derecho y agregar el jar jasperreports-5.0.0 
