@@ -48,7 +48,7 @@ public class AsignarNotaPrevia extends javax.swing.JDialog {
     TableModelListener tml;
 
     public AsignarNotaPrevia(java.awt.Frame parent, boolean modal) {
-        super(parent, modal);
+        super(parent, "ASIGNAR NOTAS PREVIAS" ,modal);
         initComponents();
         this.setResizable(false);
         setLocationRelativeTo(null);
