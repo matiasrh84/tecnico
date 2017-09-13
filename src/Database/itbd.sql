@@ -1,5 +1,5 @@
-﻿# Host: localhost  (Version 5.6.24-log)
-# Date: 2017-09-12 01:51:54
+﻿# Host: localhost  (Version 5.7.13-log)
+# Date: 2017-09-13 20:49:50
 # Generator: MySQL-Front 6.0  (Build 2.20)
 
 
@@ -267,7 +267,7 @@ CREATE TABLE `inasistencias` (
   `Lugar` enum('AULA','TALLER','ED FISICA','N/C') DEFAULT NULL,
   `Tipo` enum('AUSENTE','TARDE','SUSPENSION') DEFAULT NULL,
   `cantidad` double(3,2) unsigned NOT NULL DEFAULT '0.00',
-  `Turno` enum('MAÑANA','TARDE') DEFAULT NULL,
+  `Turno` enum('MAÑANA','TARDE','N/C') DEFAULT NULL,
   `idAlumnos` int(10) unsigned NOT NULL,
   `Justificacion` enum('SI','NO','N/C') DEFAULT NULL,
   `Nota` varchar(255) DEFAULT NULL,
@@ -277,13 +277,13 @@ CREATE TABLE `inasistencias` (
   KEY `periodo` (`idPeriodoLectivo`),
   CONSTRAINT `fk_Inasistencias_Alumnos1` FOREIGN KEY (`idAlumnos`) REFERENCES `alumnos` (`idAlumnos`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `periodo` FOREIGN KEY (`idPeriodoLectivo`) REFERENCES `periodolectivo` (`idPeriodoLectivo`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 
 #
 # Data for table "inasistencias"
 #
 
-INSERT INTO `inasistencias` VALUES (1,'2017-09-11','AULA','TARDE',0.25,'MAÑANA',1,'SI','Viaje',1),(2,'2017-09-11','AULA','AUSENTE',0.50,'MAÑANA',2,'SI',NULL,1),(3,'2017-09-11','AULA','TARDE',0.25,'MAÑANA',5,'SI','Cert. médico',1),(4,'2017-09-11','AULA','AUSENTE',0.50,'MAÑANA',7,'SI','Viaje',1),(5,'2017-09-11','AULA','AUSENTE',9.00,'MAÑANA',8,'NO',NULL,1),(6,'2017-09-15','ED FISICA','TARDE',0.25,'TARDE',1,'SI','Cert. médico',1),(7,'2017-09-15','ED FISICA','AUSENTE',0.50,'TARDE',2,'SI','Cert. médico',1),(8,'2017-09-15','ED FISICA','AUSENTE',0.50,'TARDE',3,'SI','Cert médico',1),(9,'2017-09-15','ED FISICA','AUSENTE',0.50,'TARDE',5,'NO',NULL,1),(10,'2017-09-15','ED FISICA','AUSENTE',0.50,'TARDE',8,'SI','Cert. médico',1),(11,'2017-09-15','AULA','AUSENTE',0.50,'MAÑANA',4,'SI','Cert. médico',1),(12,'2017-09-13','AULA','AUSENTE',0.50,'MAÑANA',8,'NO',NULL,1),(13,'2017-09-13','N/C','SUSPENSION',1.00,'MAÑANA',1,'N/C',NULL,1);
+INSERT INTO `inasistencias` VALUES (1,'2017-09-19','AULA','AUSENTE',0.50,'MAÑANA',1,'NO',NULL,1),(2,'2017-09-13','AULA','AUSENTE',0.50,'MAÑANA',1,'NO',NULL,1),(3,'2017-09-11','AULA','AUSENTE',0.50,'MAÑANA',7,'NO',NULL,1),(4,'2017-09-13','N/C','SUSPENSION',1.00,'N/C',2,'N/C','POR MOLESTAR EN EL RECREO',1);
 
 #
 # Structure for table "alumnos_estan_en_cursos"
@@ -354,16 +354,16 @@ CREATE TABLE `profesores_dictan_asignaturas_en_cursos` (
   `idProfesores` int(10) unsigned NOT NULL,
   `idAsignaturas` int(10) unsigned NOT NULL,
   `idCursos` int(11) unsigned NOT NULL DEFAULT '0',
-  `idPeriodolectivo` int(11) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`idProfesores`,`idAsignaturas`,`idCursos`,`idPeriodolectivo`),
+  `idPeriodoLectivo` int(11) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`idProfesores`,`idAsignaturas`,`idCursos`,`idPeriodoLectivo`),
   KEY `fk_Profesores_has_Asignaturas_Asignaturas1_idx` (`idAsignaturas`),
   KEY `fk_Profesores_has_Asignaturas_Profesores1_idx` (`idProfesores`),
   KEY `fk_Profesores_has_Asignaturas_Cursos` (`idCursos`),
-  KEY `idPeriodolectivo` (`idPeriodolectivo`),
+  KEY `idPeriodolectivo` (`idPeriodoLectivo`),
   CONSTRAINT `fk_Profesores_has_Asignaturas_Asignaturas1` FOREIGN KEY (`idAsignaturas`) REFERENCES `asignaturas` (`idAsignaturas`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_Profesores_has_Asignaturas_Cursos` FOREIGN KEY (`idCursos`) REFERENCES `cursos` (`idCursos`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_Profesores_has_Asignaturas_Profesores1` FOREIGN KEY (`idProfesores`) REFERENCES `profesores` (`idProfesores`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `profesores_dictan_asignaturas_en_cursos_ibfk_1` FOREIGN KEY (`idPeriodolectivo`) REFERENCES `periodolectivo` (`idPeriodoLectivo`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `profesores_dictan_asignaturas_en_cursos_ibfk_1` FOREIGN KEY (`idPeriodoLectivo`) REFERENCES `periodolectivo` (`idPeriodoLectivo`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 #
@@ -383,15 +383,19 @@ CREATE TABLE `sanciones` (
   `Cantidad` int(11) DEFAULT NULL,
   `Fecha` date DEFAULT NULL,
   `idAlumnos` int(10) unsigned NOT NULL,
+  `idPeriodoLectivo` int(11) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`idSanciones`,`idAlumnos`),
   KEY `fk_Sanciones_Alumnos1_idx` (`idAlumnos`),
-  CONSTRAINT `fk_Sanciones_Alumnos1` FOREIGN KEY (`idAlumnos`) REFERENCES `alumnos` (`idAlumnos`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  KEY `fk_Sanciones_PeriodoLectivo1` (`idPeriodoLectivo`),
+  CONSTRAINT `fk_Sanciones_Alumnos1` FOREIGN KEY (`idAlumnos`) REFERENCES `alumnos` (`idAlumnos`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Sanciones_PeriodoLectivo1` FOREIGN KEY (`idPeriodoLectivo`) REFERENCES `periodolectivo` (`idPeriodoLectivo`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 #
 # Data for table "sanciones"
 #
 
+INSERT INTO `sanciones` VALUES (1,'OMAR ESCOBAR','POR MOLESTAR EN EL RECREO',1,'2017-09-13',2,1);
 
 #
 # Structure for table "trabajospracticos"
@@ -400,27 +404,32 @@ CREATE TABLE `sanciones` (
 CREATE TABLE `trabajospracticos` (
   `idTrabajosPracticos` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `Nombre` varchar(45) DEFAULT NULL,
+  `Numero` int(11) unsigned NOT NULL DEFAULT '0',
   `FechaAsignacion` date DEFAULT NULL,
   `FechaEntrega` date DEFAULT NULL,
   `idAsignaturas` int(10) unsigned NOT NULL,
   `idProfesores` int(10) unsigned NOT NULL,
   `idCursos` int(10) unsigned NOT NULL,
   `idCuatrimestre` int(10) unsigned NOT NULL,
+  `idPeriodoLectivo` int(11) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`idTrabajosPracticos`),
   KEY `fk_TrabajosPracticos_Asignaturas1_idx` (`idAsignaturas`),
   KEY `fk_TrabajosPracticos_Profesores1_idx` (`idProfesores`),
   KEY `fk_TrabajosPracticos_Cursos1_idx` (`idCursos`),
   KEY `fk_TrabajosPracticos_Cuatrimestre1_idx` (`idCuatrimestre`),
+  KEY `fk_TrabajosPracticos_PeriodoLectivo1` (`idPeriodoLectivo`),
   CONSTRAINT `fk_TrabajosPracticos_Asignaturas1` FOREIGN KEY (`idAsignaturas`) REFERENCES `asignaturas` (`idAsignaturas`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_TrabajosPracticos_Cuatrimestre1` FOREIGN KEY (`idCuatrimestre`) REFERENCES `cuatrimestres` (`idCuatrimestres`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_TrabajosPracticos_Cursos1` FOREIGN KEY (`idCursos`) REFERENCES `cursos` (`idCursos`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_TrabajosPracticos_PeriodoLectivo1` FOREIGN KEY (`idPeriodoLectivo`) REFERENCES `periodolectivo` (`idPeriodoLectivo`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_TrabajosPracticos_Profesores1` FOREIGN KEY (`idProfesores`) REFERENCES `profesores` (`idProfesores`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 #
 # Data for table "trabajospracticos"
 #
 
+INSERT INTO `trabajospracticos` VALUES (1,'Alfabeto',1,'2017-07-07','2017-07-17',1,1,1,1,1);
 
 #
 # Structure for table "alumnos_presentan_trabajospracticos"
@@ -579,6 +588,57 @@ WHERE
   (`carreras`.`Estado` = 'ACTIVA');
 
 #
+# View "vista_datostp"
+#
+
+CREATE
+  ALGORITHM = UNDEFINED
+  VIEW `vista_datostp`
+  AS
+SELECT
+  `asignaturas`.`idAsignaturas`,
+  `cursos`.`idCursos`,
+  `profesores`.`idProfesores`,
+  `profesores_dictan_asignaturas_en_cursos`.`idPeriodoLectivo`,
+  `cuatrimestres`.`idCuatrimestres`,
+  `asignaturas`.`Materia`,
+  `cursos`.`Numero` AS 'Curso',
+  `cuatrimestres`.`Cuatrimestre`
+FROM
+  ((((`asignaturas`
+    JOIN `profesores_dictan_asignaturas_en_cursos` ON ((`profesores_dictan_asignaturas_en_cursos`.`idAsignaturas` = `asignaturas`.`idAsignaturas`)))
+    JOIN `cursos` ON ((`profesores_dictan_asignaturas_en_cursos`.`idCursos` = `cursos`.`idCursos`)))
+    JOIN `profesores` ON ((`profesores_dictan_asignaturas_en_cursos`.`idProfesores` = `profesores`.`idProfesores`)))
+    JOIN `cuatrimestres` ON ((`profesores_dictan_asignaturas_en_cursos`.`idPeriodoLectivo` = `cuatrimestres`.`idPeriodoLectivo`)));
+
+#
+# View "vista_faltas_suspensiones"
+#
+
+CREATE
+  ALGORITHM = UNDEFINED
+  VIEW `vista_faltas_suspensiones`
+  AS
+SELECT
+  `alumnos_estan_en_cursos`.`Norden`,
+  `alumnos`.`Apellido`,
+  `alumnos`.`Nombre`,
+  SUM((CASE WHEN (`inasistencias`.`Justificacion` = 'SI') THEN `inasistencias`.`cantidad` ELSE 0 END)) AS 'justificadas',
+  SUM((CASE WHEN (`inasistencias`.`Justificacion` = 'NO') THEN `inasistencias`.`cantidad` ELSE 0 END)) AS 'injustificadas',
+  SUM((CASE WHEN (`inasistencias`.`Tipo` = 'SUSPENSION') THEN `inasistencias`.`cantidad` ELSE 0 END)) AS 'suspensiones',
+  SUM(`inasistencias`.`cantidad`) AS 'Totales',
+  `alumnos`.`idAlumnos`,
+  `alumnos_estan_en_cursos`.`idPeriodoLectivo`,
+  `cursos`.`Numero`
+FROM
+  (`cursos`
+    LEFT JOIN (`alumnos_estan_en_cursos`
+      LEFT JOIN (`alumnos`
+        LEFT JOIN `inasistencias` ON ((`inasistencias`.`idAlumnos` = `alumnos`.`idAlumnos`))) ON ((`alumnos_estan_en_cursos`.`idAlumnos` = `alumnos`.`idAlumnos`))) ON ((`alumnos_estan_en_cursos`.`idCursos` = `cursos`.`idCursos`)))
+GROUP BY
+  `alumnos_estan_en_cursos`.`Norden`;
+
+#
 # View "vista_inasistencias"
 #
 
@@ -625,8 +685,8 @@ SELECT
   `alumnos_estan_en_cursos`.`idPeriodoLectivo`,
   `cursos`.`Numero`
 FROM
-  (((`inasistencias`
-    JOIN `alumnos` ON ((`inasistencias`.`idAlumnos` = `alumnos`.`idAlumnos`)))
+  (((`alumnos`
+    JOIN `inasistencias` ON ((`inasistencias`.`idAlumnos` = `alumnos`.`idAlumnos`)))
     JOIN `alumnos_estan_en_cursos` ON ((`alumnos_estan_en_cursos`.`idAlumnos` = `alumnos`.`idAlumnos`)))
     JOIN `cursos` ON ((`alumnos_estan_en_cursos`.`idCursos` = `cursos`.`idCursos`)))
 GROUP BY
@@ -1306,17 +1366,12 @@ END;
 #
 
 CREATE PROCEDURE `altaSanciones`(IN _denunciante varchar(45), IN _motivo varchar(255),
-IN _cantidad int(11) unsigned, IN _fecha date, IN _idalumnos INT UNSIGNED)
+IN _cantidad int(11) unsigned, IN _fecha date, IN _idalumnos INT UNSIGNED, IN _idperiodolectivo int)
 BEGIN
-declare id INT(11);
-declare fecha date;
-declare cant double(9,2) unsigned;
-SET id=_idalumnos;
-SET fecha=_fecha;
-SET cant=_cantidad;
-IF (SELECT count(*) from  alumnos WHERE idAlumnos=id AND estado='REGULAR') = 1 THEN
-INSERT INTO sanciones (Denunciante, Motivo, Cantidad, Fecha, idAlumnos) VALUES (_denunciante, _motivo, _cantidad, _fecha, _idalumnos);
-INSERT INTO inasistencias (Fecha, Tipo, Cantidad, idAlumnos) VALUES (fecha, 'SUSPENSION', cant, id);
+
+IF (SELECT count(*) from  alumnos_estan_en_cursos WHERE idAlumnos=_idalumnos AND idPeriodoLectivo=_idperiodolectivo) = 1 THEN
+INSERT INTO sanciones (Denunciante, Motivo, Cantidad, Fecha, idAlumnos, idPeriodolectivo) VALUES (_denunciante, _motivo, _cantidad, _fecha, _idalumnos, _idperiodolectivo);
+INSERT INTO inasistencias (Fecha, Lugar, Tipo, Cantidad, Turno, idAlumnos, Justificacion, Nota, idPeriodoLectivo) VALUES (_fecha, 'N/C', 'SUSPENSION', _cantidad, 'N/C', _idalumnos, 'N/C', _motivo, _idperiodolectivo);
 END IF;
 END;
 
