@@ -1,5 +1,6 @@
 package Vista;
 
+import static Constantes.NombresDialogos.ASIGNAR_PRACTICOS;
 import Controlador.Escape;
 import static Vista.AsignarFechaLibroFolio.libro;
 import com.sun.glass.events.KeyEvent;
@@ -10,7 +11,7 @@ public class AsignarPracticos extends javax.swing.JDialog {
     public static int asignados, presentados, aprobados, bandera=0;
 
     public AsignarPracticos(java.awt.Frame parent, boolean modal) {
-        super(parent, modal);
+        super(parent, ASIGNAR_PRACTICOS, modal);
         initComponents();
         this.setResizable(false);
         setLocationRelativeTo(null);
