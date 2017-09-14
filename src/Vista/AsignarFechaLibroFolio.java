@@ -1,5 +1,6 @@
 package Vista;
 
+import static Constantes.NombresDialogos.ASIGNAR_FECHA_LIBRO;
 import Controlador.EnterarFecha;
 import Controlador.Escape;
 import Controlador.Fecha;
@@ -14,7 +15,7 @@ public class AsignarFechaLibroFolio extends javax.swing.JDialog {
     Fecha fechas = new Fecha();
     EnterarFecha efechas = new EnterarFecha();
     public AsignarFechaLibroFolio(java.awt.Frame parent, boolean modal) {
-        super(parent, modal);
+        super(parent, ASIGNAR_FECHA_LIBRO,modal);
         initComponents();
         this.setResizable(false);
         setLocationRelativeTo(null);
